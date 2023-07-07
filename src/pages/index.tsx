@@ -1,84 +1,166 @@
 import Layout from "@/components/layout";
+import { cls } from "@/libs/utils";
 import type { NextPage } from "next";
-
+import { useForm, SubmitErrorHandler, SubmitHandler } from "react-hook-form";
+interface Inputs {
+  what: string;
+  why: string;
+  salary: string;
+  introduce: string;
+  dream: string;
+  email: string;
+}
 const Home: NextPage = () => {
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+  } = useForm<Inputs>();
+  const onValid: SubmitHandler<Inputs> = (e) => {
+    console.log(e);
+  };
+  const onInvalid: SubmitErrorHandler<Inputs> = () => {};
+
   return (
-    <Layout title="홈" hasTabar>
-      <div className="flex flex-col space-y-5  ">
-        {[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1].map((_, i) => (
-          <div
-            key={i}
-            className="flex border-b pb-4 justify-between cursor-pointer px-4"
-          >
-            <div className=" flex space-x-4">
-              <div className="w-20 h-20 bg-gray-400 rounded-md" />
-              <div className="pt-2 flex flex-col">
-                <h3 className="text-sm font-medium text-gray-900">
-                  New iPhone 14
-                </h3>
-                <span className="text-xs text-gray-500">Black</span>
-                <span className="font-medium mt-1 text-gray-900">$95</span>
-              </div>
-            </div>
-            <div className="flex items-end justify-end space-x-1.5">
-              <div className="flex items-center text-sm text-gray-600 space-x-0.5">
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                  ></path>
-                </svg>
-                <span>1</span>
-              </div>
-              <div className="flex items-center text-sm text-gray-600 space-x-0.5">
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-                  ></path>
-                </svg>
-                <span>1</span>
-              </div>
+    <Layout>
+      <form
+        onSubmit={handleSubmit(onValid, onInvalid)}
+        className="mx-auto min-w-[500px] border border-r-4 rounded-2xl border-b-4 border-gray-900 p-8 bg-teal-400 overflow-auto max-h-[800px]"
+      >
+        <h1 className="text-center font-semibold text-2xl">
+          Job Application Form
+        </h1>
+        <div className="mt-4 space-y-2">
+          <div>
+            <h2 className="text-base font-medium">
+              what department do tou want to work for?
+              {errors.what && (
+                <span className="text-red-600">{errors.what.message}</span>
+              )}
+            </h2>
+            <div>
+              {[
+                { ui: "Sales", value: "sales" },
+                { ui: "Marketing", value: "marketting" },
+                { ui: "Accounting", value: "accounting" },
+                { ui: "Customer Service", value: "cs" },
+              ].map((el, i) => (
+                <div className="space-x-1" key={el.ui}>
+                  <input
+                    id={"what_option" + i}
+                    type="radio"
+                    value={el.value}
+                    className="w-2 h-2"
+                    {...register("what", {
+                      required: { value: true, message: "required" },
+                    })}
+                  />
+                  <label htmlFor={"what_option" + i} className="text-xs">
+                    {el.ui}
+                  </label>
+                </div>
+              ))}
             </div>
           </div>
-        ))}
-        <button
-          className="fixed bottom-24 right-5 bg-orange-400 rounded-full p-4 text-white shadow-xl
-       hover:bg-orange-500 cursor-pointer transition-colors"
-        >
-          <svg
-            className="h-6 w-6"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            aria-hidden="true"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+
+          <div>
+            <h2 className="text-base font-medium">
+              Why do you want to join this company?
+              {errors.why && (
+                <span className="text-red-600">{errors.why.message}</span>
+              )}
+            </h2>
+            <div>
+              {[
+                { ui: "I want money!", value: "money" },
+                { ui: "I love this company", value: "company" },
+                { ui: "I want to lern", value: "learn" },
+                { ui: "I don't know why", value: "none" },
+              ].map((el, i) => (
+                <div className="space-x-1" key={el.ui}>
+                  <input
+                    {...register("why", {
+                      required: { value: true, message: "required" },
+                    })}
+                    id={"why" + i}
+                    type="radio"
+                    value={el.value}
+                    className="w-2 h-2"
+                  />
+                  <label htmlFor={"why" + i} className="text-xs">
+                    {el.ui}
+                  </label>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+        <div className="flex flex-col mt-3 space-y-5">
+          <div className="flex flex-col">
+            <label htmlFor="salary">Salary</label>
+            <select {...register("salary")} id="salary ">
+              <option value={50}>$50K</option>
+              <option value={100}>$100K</option>
+              <option value={150}>$150K</option>
+              <option value={200}>$200K</option>
+              <option value={300}>$300K</option>
+            </select>
+          </div>
+          <div className="flex flex-col relative">
+            <label>Intoroduce yourself</label>
+            <input
+              className={cls(errors.introduce ? "border-red-600" : "")}
+              {...register("introduce", {
+                required: "required",
+              })}
+              type="text"
+            ></input>
+            {errors.introduce && (
+              <span className="absolute -bottom-5 text-red-600">
+                {errors.introduce.message}
+              </span>
+            )}
+          </div>
+          <div className="flex flex-col relative">
+            <label>Tell us what your dreams are</label>
+            <textarea
+              {...register("dream", {
+                minLength: { value: 10, message: "more than 10" },
+                required: "required",
+              })}
+            ></textarea>
+            {errors.dream && (
+              <span className="absolute -bottom-5 text-red-600">
+                {errors.dream.message}
+              </span>
+            )}
+          </div>
+          <div className="flex flex-col relative">
+            <label>Email</label>
+            <input
+              type="text"
+              {...register("email", {
+                required: "required",
+                validate: {
+                  dotCheck: (e) => e.includes(".") || "need'.'",
+                  AtCheck: (e) => e.includes("@") || `need"@"`,
+                },
+              })}
             />
-          </svg>
+            {errors.email && (
+              <span className="absolute -bottom-5 text-red-600">
+                {errors.email.message}
+              </span>
+            )}
+          </div>
+        </div>
+        <button
+          type="submit"
+          className="border border-r-2 border-b-2 border-gray-900 bg-yellow-400 w-full mt-5 p-2 font-semibold"
+        >
+          Give me this job
         </button>
-      </div>
+      </form>
     </Layout>
   );
 };
